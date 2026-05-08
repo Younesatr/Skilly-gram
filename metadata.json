@@ -1,0 +1,10 @@
+{
+  "name": "Skilligram",
+  "description": "Show proof, own the vibe. The creative social layer for the next generation of builders and visionaries.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}

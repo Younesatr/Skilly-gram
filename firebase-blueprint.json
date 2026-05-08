@@ -1,0 +1,157 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Core user authentication and profile metadata",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "username": { "type": "string" },
+        "bio": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "recruiter", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "xp": { "type": "number" },
+        "level": { "type": "number" },
+        "streak": { "type": "number" }
+      },
+      "required": ["uid", "email", "username"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "Extended professional profile information",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "headline": { "type": "string" },
+        "about": { "type": "string" },
+        "location": { "type": "string" },
+        "website": { "type": "string" },
+        "github": { "type": "string" },
+        "linkedin": { "type": "string" },
+        "skills": { "type": "array" },
+        "projects": { "type": "array" },
+        "certifications": { "type": "array" },
+        "bannerURL": { "type": "string" }
+      }
+    },
+    "Skill": {
+      "title": "Skill",
+      "description": "Skill definition and trend data",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "demand": { "type": "number" },
+        "trending": { "type": "boolean" },
+        "icon": { "type": "string" }
+      }
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Social feed post or project showcase",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "content": { "type": "string" },
+        "mediaURLs": { "type": "array" },
+        "tags": { "type": "array" },
+        "likesCount": { "type": "number" },
+        "commentsCount": { "type": "number" },
+        "repostsCount": { "type": "number" },
+        "type": { "type": "string", "enum": ["update", "project", "milestone"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Comments on posts",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Community": {
+      "title": "Community",
+      "description": "Skill-based or interest-based groups",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "coverURL": { "type": "string" },
+        "membersCount": { "type": "number" },
+        "tags": { "type": "array" },
+        "creatorId": { "type": "string" }
+      }
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Direct message in a conversation",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "read": { "type": "boolean" }
+      }
+    },
+    "Job": {
+      "title": "Job",
+      "description": "Job or internship opportunity",
+      "type": "object",
+      "properties": {
+        "companyName": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "location": { "type": "string" },
+        "salary": { "type": "string" },
+        "skillsRequired": { "type": "array" },
+        "type": { "type": "string", "enum": ["full-time", "internship", "contract"] },
+        "postedAt": { "type": "string", "format": "date-time" },
+        "recruiterId": { "type": "string" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User notifications",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "type": { "type": "string" },
+        "content": { "type": "string" },
+        "link": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "AIRecommendation": {
+      "title": "AIRecommendation",
+      "description": "AI-generated career or skill suggestions",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "recommendations": { "type": "array" },
+        "suggestedSkills": { "type": "array" },
+        "careerPaths": { "type": "array" },
+        "generatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "users": { "schema": "User", "description": "User profiles" },
+    "posts": { "schema": "Post", "description": "Social feed content" },
+    "posts/{postId}/comments": { "schema": "Comment", "description": "Comments on posts" },
+    "communities": { "schema": "Community", "description": "Skill communities" },
+    "conversations": { "schema": "object", "description": "Direct messages" },
+    "jobs": { "schema": "Job", "description": "Job listings" },
+    "notifications": { "schema": "Notification", "description": "User notifications" },
+    "ai_recommendations": { "schema": "AIRecommendation", "description": "AI career insights" }
+  }
+}

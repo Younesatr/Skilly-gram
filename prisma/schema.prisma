@@ -1,0 +1,198 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String    @unique
+  displayName   String?
+  photoURL      String?
+  bio           String?
+  role          Role      @default(USER)
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  streak        Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  posts         Post[]
+  comments      Comment[]
+  likes         Like[]
+  communities   CommunityMember[]
+  messagesSent  Message[] @relation("SentMessages")
+  conversations ConversationParticipant[]
+  applications  Application[]
+  followers     Follows[] @relation("following")
+  following     Follows[] @relation("follower")
+  achievements  UserAchievement[]
+  aiRecs        AIRecommendation[]
+}
+
+enum Role {
+  USER
+  RECRUITER
+  ADMIN
+}
+
+model Post {
+  id            String    @id @default(cuid())
+  content       String    @db.Text
+  mediaURLs     String[]
+  tags          String[]
+  authorId      String
+  author        User      @relation(fields: [authorId], references: [id])
+  likes         Like[]
+  comments      Comment[]
+  saveCount     Int       @default(0)
+  createdAt     DateTime  @default(now())
+}
+
+model Like {
+  id      String @id @default(cuid())
+  userId  String
+  postId  String
+  user    User   @relation(fields: [userId], references: [id])
+  post    Post   @relation(fields: [postId], references: [id])
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  postId    String
+  authorId  String
+  post      Post     @relation(fields: [postId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Community {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  coverURL    String?
+  members     CommunityMember[]
+  createdAt   DateTime @default(now())
+}
+
+model CommunityMember {
+  userId      String
+  communityId String
+  role        MemberRole @default(MEMBER)
+  user        User       @relation(fields: [userId], references: [id])
+  community   Community  @relation(fields: [communityId], references: [id])
+  @@id([userId, communityId])
+}
+
+enum MemberRole {
+  MEMBER
+  MODERATOR
+  OWNER
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  content        String       @db.Text
+  senderId       String
+  conversationId String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  createdAt      DateTime     @default(now())
+  read           Boolean      @default(false)
+}
+
+model Conversation {
+  id           String   @id @default(cuid())
+  messages     Message[]
+  participants ConversationParticipant[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ConversationParticipant {
+  userId         String
+  conversationId String
+  user           User         @relation(fields: [userId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  @@id([userId, conversationId])
+}
+
+model Job {
+  id             String   @id @default(cuid())
+  title          String
+  company        String
+  description    String   @db.Text
+  location       String
+  salary         String?
+  type           JobType
+  skillsRequired String[]
+  createdAt      DateTime @default(now())
+  applications   Application[]
+}
+
+enum JobType {
+  FULL_TIME
+  INTERNSHIP
+  CONTRACT
+  FREELANCE
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  jobId     String
+  userId    String
+  status    AppStatus @default(PENDING)
+  job       Job      @relation(fields: [jobId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+enum AppStatus {
+  PENDING
+  REVIEWING
+  ACCEPTED
+  REJECTED
+}
+
+model Follows {
+  followerId  String
+  followingId String
+  follower    User   @relation("follower", fields: [followerId], references: [id])
+  following   User   @relation("following", fields: [followingId], references: [id])
+  @@id([followerId, followingId])
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  @@id([userId, achievementId])
+}
+
+model AIRecommendation {
+  id             String   @id @default(cuid())
+  userId         String
+  suggestedSkills String[]
+  careerPaths    String[]
+  profileTip     String?
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+}
