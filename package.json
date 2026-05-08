@@ -6,15 +6,15 @@
 
   "homepage": "https://younesatr.github.io/Skilly-gram/",
 
-  "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "preview": "vite preview",
-    "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
-  },
+"scripts": {
+  "dev": "tsx server.ts",
+  "build": "vite build",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist",
+  "preview": "vite preview",
+  "clean": "rm -rf dist",
+  "lint": "tsc --noEmit"
+}
 
   "dependencies": {
     "@base-ui/react": "^1.4.1",
